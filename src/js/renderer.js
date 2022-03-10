@@ -1,57 +1,42 @@
-import { Cell } from './grid.js'
-
 export class Renderer {
-  constructor(tileset) {
-    console.assert(tileset !== undefined)
-    this.#tileset = tileset
+  constructor(surface) {
+    console.assert(surface !== undefined)
+    this.#surface = surface
   }
 
-  #tileset = false
+  #surface = false
 
   backgroundColor = 'black'
   forgroundColor = 'white'
 
-  state = ''
-
-  set state(newState) {
-    // Update changes
-    this.state = newState
-  }
-
-  RenderOptions(context, options = {}) {
+  RenderOptions(options = {}) {
     options.x ||= 0
     options.y ||= 0
-    options.width ||= context.canvas.width
-    options.height ||= context.canvas.height
+    options.width ||= this.#surface.width
+    options.height ||= this.#surface.height
 
     options.backgroundColor ||= this.backgroundColor
     options.forgroundColor ||= this.forgroundColor
 
-    options.tileset ||= this.#tileset
+    console.assert(options.tileset)
     options.glyphSize ||= 16
     options.scale = options.glyphSize / options.tileset.glyphSize
     return options
   }
 
-  Render(context, options) {
-    let o = this.RenderOptions(context, options)
-    context.options = o
+  Render(options) {
+    let o = this.RenderOptions(options)
 
-    context.fillStyle = o.backgroundColor
-    context.fillRect(o.x, o.y, o.width, o.height)
+    this.#surface.Clear(o)
 
     if (o.grid) {
-      o.grid.Render(context)
+      o.grid.Render(this.#surface, o)
     }
 
-    // FPS debug
-    if (o.fps !== undefined && o.debug) {
-      const bottom = context.canvas.height / o.glyphSize - 1
-      let fpsString = `${o.fps}`.padStart(5, '.')
-      let fpsGlyphs = [0, 1, 2, 3, 4].map(
-        i => new Cell({ x: i, y: bottom }, fpsString.charCodeAt(i))
-      )
-      fpsGlyphs.forEach(g => g.Render(context))
+    if (o.fps) {
+      o.fps.Render(this.#surface, o)
     }
+
+    this.#surface.Combine()
   }
 }

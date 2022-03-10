@@ -1,5 +1,7 @@
+import { FPS } from './fps.js'
 import { Grid } from './grid.js'
 import { Renderer } from './renderer.js'
+import { RenderSurface } from './renderSurface.js'
 import { TileSet } from './tileset.js'
 
 // After the complete loads, start the loop.
@@ -17,15 +19,22 @@ window.addEventListener('DOMContentLoaded', () => {
   let tileset = new TileSet(tilesImage)
   let grid = new Grid()
 
-  let renderer = new Renderer(tileset)
-  let options = { backgroundColor: 'red', grid: grid, debug: true }
+  let surface = new RenderSurface(canvas)
+  let renderer = new Renderer(surface)
+  let options = {
+    tileset: tileset,
+    backgroundColor: 'red',
+    grid: grid,
+    debug: true,
+    offset: { x: 0, y: 0 },
+  }
 
-  let t0 = performance.now()
+  options.fps = new FPS()
   function RenderLoop() {
-    let t1 = performance.now()
-    options.fps = 1000.0 / (t1 - t0)
-    renderer.Render(context, options)
-    t0 = t1
+    if (options.fps.Calc()) {
+      options.grid.DebugFill()
+      renderer.Render(options)
+    }
     window.requestAnimationFrame(RenderLoop)
   }
 
