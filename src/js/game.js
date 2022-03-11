@@ -1,5 +1,7 @@
+import { DemoMap } from '../data/maps.js'
 import { FPS } from './fps.js'
-import { Grid } from './grid.js'
+import { GameMap } from './gameMap.js'
+import { DemoGrid } from './Grid.js'
 import { Renderer } from './renderer.js'
 import { RenderSurface } from './renderSurface.js'
 import { TileSet } from './tileset.js'
@@ -17,7 +19,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let tilesImage = document.getElementById('tileset')
   let tileset = new TileSet(tilesImage)
-  let grid = new Grid()
+  // let grid = new DemoGrid()
+  let grid = new GameMap(DemoMap)
+  grid.Attach()
 
   let surface = new RenderSurface(canvas)
   let renderer = new Renderer(surface)
@@ -32,7 +36,7 @@ window.addEventListener('DOMContentLoaded', () => {
   options.fps = new FPS()
   function RenderLoop() {
     if (options.fps.Calc()) {
-      options.grid.DebugFill()
+      options.grid.Update()
       renderer.Render(options)
     }
     window.requestAnimationFrame(RenderLoop)

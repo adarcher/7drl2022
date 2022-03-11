@@ -25,6 +25,12 @@ export class Grid {
     }
   }
 
+  CellAt(position) {
+    return this.cells.at(position.x + position.y * this.width)
+  }
+
+  Update() {}
+
   DebugFill() {
     this.cells.forEach(cell => {
       cell.state = RandInt(0, 255)
@@ -55,5 +61,11 @@ export class Grid {
     fg.globalCompositeOperation = 'destination-out'
     this.RenderTiles(fg, options)
     fg.globalCompositeOperation = 'source-over'
+  }
+}
+
+export class DemoGrid extends Grid {
+  Update() {
+    this.DebugFill()
   }
 }
