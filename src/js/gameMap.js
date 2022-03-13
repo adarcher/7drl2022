@@ -1,21 +1,43 @@
+import { GameTile } from './gameTile.js'
 import { Grid } from './grid.js'
+import { Mobile } from './mobile.js'
 import { Player } from './player.js'
+
+class FloorGrid extends Grid {
+  constructor(mapDefinition, offset) {
+    super(mapDefinition, offset, GameTile)
+  }
+}
 
 export class GameMap {
   constructor(mapDefinition) {
     this.name = mapDefinition.name
-    this.floor = new Grid(mapDefinition)
-    this.mobile = new Grid()
+    this.passables = mapDefinition.passables
+    this.floor = new FloorGrid(mapDefinition)
 
     this.ParseFloor(mapDefinition.definition)
 
-    this.player = new Player({ x: 15, y: 10 }, this.floor)
-    this.mobile.cells = [this.player]
+    this.player = new Player(this)
+    this.player.MoveTo(this.TileAt(15, 10), true)
+
+    this.ParseMobs(mapDefinition.mobs)
+  }
+
+  TileAt(x, y) {
+    return this.floor.TileAt(x, y)
   }
 
   ParseFloor(str) {
-    this.floor.cells.forEach((cell, i) => {
-      cell.state = str.charCodeAt(i)
+    this.floor.tiles.forEach((tile, i) => {
+      tile.glyph = str.charCodeAt(i)
+      tile.passable = this.passables.includes(str.charAt(i))
+    })
+  }
+
+  ParseMobs(mobs) {
+    mobs.forEach(([glyph, x, y]) => {
+      var mob = new Mobile(this, glyph)
+      mob.MoveTo(this.TileAt(x, y), true)
     })
   }
 
@@ -29,11 +51,9 @@ export class GameMap {
 
   Update() {
     this.floor.Update()
-    this.mobile.Update()
   }
 
   Render(surface, options) {
     this.floor.Render(surface, options)
-    this.mobile.Render(surface, options)
   }
 }

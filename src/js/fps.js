@@ -1,4 +1,3 @@
-import { Cell } from './cell.js'
 import { Grid } from './grid.js'
 
 export class FPS {
@@ -27,20 +26,19 @@ export class FPS {
       this.t1 = t1
       this.current = current
     }
-    return cap
+    return cap ? t1 - t0 : false
   }
 
   Render(surface, options) {
     let o = options
     if (o.debug) {
-      var fg = surface.foreground
       const bottom = surface.height / o.glyphSize - 1
       let str = `${this.current}`.padStart(5, '.')
-      let glyphs = [0, 1, 2, 3, 4].map(
-        i => new Cell({ x: i, y: bottom }, str.charCodeAt(i))
-      )
-      glyphs.forEach(g => g.RenderForeground(fg, o))
-      glyphs.forEach(g => g.RenderTile(fg, o))
+      this.grid.tiles.forEach((tile, i) => {
+        tile.glyph = str.charCodeAt(i)
+        tile.y = bottom
+      })
+      this.grid.Render(surface, options)
     }
   }
 }

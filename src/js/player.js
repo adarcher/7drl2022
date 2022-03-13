@@ -1,21 +1,11 @@
-import { Cell } from './cell.js'
+import { Mobile, MobileState } from './mobile.js'
 
-export class Player extends Cell {
-  constructor(position, map, glyph = 2) {
-    super(position, glyph)
-    this.glyph = glyph
-    this.map = map
+export class Player extends Mobile {
+  constructor(map, glyph = 2) {
+    super(map, glyph)
+    this.name = 'Player'
 
-    this.backgroundColor = 'yellow'
-    this.foregroundColor = 'blue'
-  }
-
-  set glyph(value) {
-    this.state = value
-  }
-
-  get glyph() {
-    return this.state
+    this.foregroundColor = 'yellow'
   }
 
   #onkeydown = false
@@ -29,35 +19,34 @@ export class Player extends Cell {
     document.onkeydown = this.#onkeydown
   }
 
-  #valid = ' '.charCodeAt(0)
-  Check(x, y) {
-    return this.map.CellAt({ x, y }).state === this.#valid
-  }
-
-  MoveTo(x, y) {
-    if (this.Check(x, y)) {
-      this.location.x = x
-      this.location.y = y
+  MoveTo(tile, force) {
+    if (force || tile.passable) {
+      super.MoveTo(tile)
       return true
     }
+    this.Attack(tile)
     return false
   }
 
   MoveUp(event) {
-    if (this.MoveTo(this.location.x, this.location.y - 1))
-      event.preventDefault()
+    var tile = this.map.TileAt(this.parent.x, this.parent.y - 1)
+    this.MoveTo(tile)
+    event.preventDefault()
   }
   MoveDown(event) {
-    if (this.MoveTo(this.location.x, this.location.y + 1))
-      event.preventDefault()
+    var tile = this.map.TileAt(this.parent.x, this.parent.y + 1)
+    this.MoveTo(tile)
+    event.preventDefault()
   }
   MoveLeft(event) {
-    if (this.MoveTo(this.location.x - 1, this.location.y))
-      event.preventDefault()
+    var tile = this.map.TileAt(this.parent.x - 1, this.parent.y)
+    this.MoveTo(tile)
+    event.preventDefault()
   }
   MoveRight(event) {
-    if (this.MoveTo(this.location.x + 1, this.location.y))
-      event.preventDefault()
+    var tile = this.map.TileAt(this.parent.x + 1, this.parent.y)
+    this.MoveTo(tile)
+    event.preventDefault()
   }
 
   KeyDown(event) {
@@ -79,6 +68,20 @@ export class Player extends Cell {
         case 'ArrowRight':
           this.MoveRight(event)
           break
+      }
+    }
+  }
+
+  Attack(tile) {
+    if (tile.children.length > 0) {
+      var target = tile.children[0]
+      if (target.state == MobileState.ALIVE) {
+        target.hp = target.hp - 10
+        if (target.hp < 0) {
+          target.state = MobileState.DYING
+        }
+        console.log(`${this.name} attacks ${target.name}!`)
+        console.log(`  ${target.name} now has ${target.hp} hp!`)
       }
     }
   }

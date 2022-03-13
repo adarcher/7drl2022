@@ -35,8 +35,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
   options.fps = new FPS()
   function RenderLoop() {
-    if (options.fps.Calc()) {
-      options.grid.Update()
+    let dt = false
+    if ((dt = options.fps.Calc())) {
+      options.grid.Update(dt)
       renderer.Render(options)
     }
     window.requestAnimationFrame(RenderLoop)

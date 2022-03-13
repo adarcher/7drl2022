@@ -1,54 +1,57 @@
-import { Cell } from './cell.js'
+import { Tile } from './tile.js'
 import { RandInt, Location } from './util.js'
 import { RandomColor } from './colors.js'
 
 export class Grid {
-  constructor(size = {}, offset = {}) {
+  constructor(size = {}, offset = {}, tilePrototype = Tile) {
     // Size is in tile count
-    this.width = size?.width || 30
-    this.height = size?.height || 20
+    this.width = size?.width || 0
+    this.height = size?.height || 0
 
     // Offset is in pixels
     this.x = offset?.x || 0
     this.y = offset?.y || 0
 
-    this.cells = []
+    this.tiles = []
+    this.tilePrototype = tilePrototype
     this.Resize()
   }
 
   Resize() {
     let length = this.width * this.height
-    this.cells.length = length
+    this.tiles.length = length
 
     for (let i = 0; i < length; i++) {
-      this.cells[i] = new Cell(Location(i, this.width))
+      this.tiles[i] = new this.tilePrototype(0, ...Location(i, this.width))
     }
   }
 
-  CellAt(position) {
-    return this.cells.at(position.x + position.y * this.width)
+  TileAt(x, y) {
+    return this.tiles.at(x + y * this.width)
   }
 
-  Update() {}
+  Update(dt) {
+    this.tiles.forEach(tile => tile.Update(dt))
+  }
 
   DebugFill() {
-    this.cells.forEach(cell => {
-      cell.state = RandInt(0, 255)
-      cell.backgroundColor = RandomColor()
-      cell.foregroundColor = RandomColor()
+    this.tiles.forEach(tile => {
+      tile.glyph = RandInt(0, 255)
+      tile.backgroundColor = RandomColor()
+      tile.foregroundColor = RandomColor()
     })
   }
 
   RenderBackground(context, options) {
-    this.cells.forEach(c => c.RenderBackground(context, options))
+    this.tiles.forEach(c => c.RenderBackground(context, options))
   }
 
   RenderForeground(context, options) {
-    this.cells.forEach(c => c.RenderForeground(context, options))
+    this.tiles.forEach(c => c.RenderForeground(context, options))
   }
 
   RenderTiles(context, options) {
-    this.cells.forEach(c => c.RenderTile(context, options))
+    this.tiles.forEach(c => c.RenderTile(context, options))
   }
 
   Render(surface, options) {
