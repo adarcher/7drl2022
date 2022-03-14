@@ -1,0 +1,26 @@
+{
+  "name": "7drl2022",
+  "version": "0.0.1",
+  "description": "7 Day Roguelike 2022",
+  "main": "index.html",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "deploy": "gh-pages -d src",
+    "serve": "light-server -s ./src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adarcher/7drl2022.git"
+  },
+  "author": "Anddy A",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adarcher/7drl2022/issues"
+  },
+  "homepage": "https://github.com/adarcher/7drl2022#readme",
+  "devDependencies": {
+    "gh-pages": "^3.2.3"
+  }
+}
