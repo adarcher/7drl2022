@@ -1,10 +1,13 @@
 import { DemoMap } from '../data/maps.js'
-import { FPS } from './fps.js'
+import { FPS } from './misc/fps.js'
 import { GameMap } from './gameMap.js'
-import { DemoGrid } from './Grid.js'
 import { Renderer } from './renderer.js'
 import { RenderSurface } from './renderSurface.js'
 import { TileSet } from './tileset.js'
+import { Demon } from './mobiles/demon.js'
+import { Demons } from '../data/demons.js'
+import { Skill } from './mobiles/skills/skill.js'
+import { Skills } from '../data/skills.js'
 
 // After the complete loads, start the loop.
 // This will include the tileset for now.
@@ -19,7 +22,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let tilesImage = document.getElementById('tileset')
   let tileset = new TileSet(tilesImage)
-  // let grid = new DemoGrid()
+
+  Skill.Load(Skills)
+  Demon.Load(Demons)
+
   let grid = new GameMap(DemoMap)
   grid.Attach()
 

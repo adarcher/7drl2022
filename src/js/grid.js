@@ -1,6 +1,6 @@
 import { Tile } from './tile.js'
-import { RandInt, Location } from './util.js'
-import { RandomColor } from './colors.js'
+import { RandInt, Location } from './misc/util.js'
+import { RandomColor } from './misc/colors.js'
 
 export class Grid {
   constructor(size = {}, offset = {}, tilePrototype = Tile) {

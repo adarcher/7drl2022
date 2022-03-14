@@ -1,4 +1,4 @@
-import { Grid } from './grid.js'
+import { Grid } from '../grid.js'
 
 export class FPS {
   constructor(target = 120, smoothing = 0.7) {

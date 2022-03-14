@@ -1,10 +1,12 @@
 export class Tile {
   static #id = 0
 
-  constructor(glyph, x, y) {
+  constructor(glyphCode, x, y) {
+    glyphCode =
+      typeof glyphCode === 'string' ? glyphCode.charCodeAt(0) : glyphCode
     this.x = x
     this.y = y
-    this.glyph = glyph || 0
+    this.glyph = glyphCode || 0
     this.backgroundColor = 'black'
     this.foregroundColor = 'white'
     this.children = []

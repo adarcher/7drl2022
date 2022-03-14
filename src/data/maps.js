@@ -3,7 +3,7 @@ export const DemoMap = {
   width: 40,
   height: 20,
   passables: [' '],
-  mobs: [['p', 9, 4]],
+  mobs: [['Slime', 8, 2]],
   definition:
     // ------------------------------------40
     'ùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùù' +

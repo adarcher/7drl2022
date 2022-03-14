@@ -1,7 +1,9 @@
 import { GameTile } from './gameTile.js'
 import { Grid } from './grid.js'
-import { Mobile } from './mobile.js'
-import { Player } from './player.js'
+import { RandInt } from './misc/util.js'
+import { Demon } from './mobiles/demon.js'
+import { Mobile } from './mobiles/mobile.js'
+import { Player } from './mobiles/player.js'
 
 class FloorGrid extends Grid {
   constructor(mapDefinition, offset) {
@@ -35,10 +37,24 @@ export class GameMap {
   }
 
   ParseMobs(mobs) {
-    mobs.forEach(([glyph, x, y]) => {
-      var mob = new Mobile(this, glyph)
-      mob.MoveTo(this.TileAt(x, y), true)
+    mobs.forEach(([name, x, y]) => {
+      this.Spawn(name, x, y)
     })
+  }
+
+  Spawn(name, x, y) {
+    let tiles = this.floor.tiles.filter(
+      tile =>
+        tile.passable &&
+        (x === undefined || tile.x === x) &&
+        (y === undefined || tile.y === y)
+    )
+
+    if (tiles.length > 0) {
+      var demon = Demon.Get(name)
+      demon.map = this
+      demon.MoveTo(tiles[RandInt(0, tiles.length)])
+    }
   }
 
   Attach() {

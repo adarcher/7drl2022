@@ -1,11 +1,11 @@
-import { Mobile, MobileState } from './mobile.js'
+import { Mobile } from './mobile.js'
 
 export class Player extends Mobile {
   constructor(map, glyph = 2) {
-    super(map, glyph)
-    this.name = 'Player'
-
+    super('Player', map, glyph)
     this.foregroundColor = 'yellow'
+
+    this.demons = []
   }
 
   #onkeydown = false
@@ -68,20 +68,6 @@ export class Player extends Mobile {
         case 'ArrowRight':
           this.MoveRight(event)
           break
-      }
-    }
-  }
-
-  Attack(tile) {
-    if (tile.children.length > 0) {
-      var target = tile.children[0]
-      if (target.state == MobileState.ALIVE) {
-        target.hp = target.hp - 10
-        if (target.hp < 0) {
-          target.state = MobileState.DYING
-        }
-        console.log(`${this.name} attacks ${target.name}!`)
-        console.log(`  ${target.name} now has ${target.hp} hp!`)
       }
     }
   }
